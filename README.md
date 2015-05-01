@@ -3,6 +3,9 @@
 
 Servletコンテナ非依存のスタンドアローンでEL2.2を利用可能にするライブラリ。
 
+# License
+Apache License 2.0.
+
 # 参考
 
 ## 参考にしたプログラム
@@ -18,20 +21,49 @@ BeanValidation1.1の実装であるHibernateValidator5.xのパッケージ「org
 
 # 使い方
 
-ELProcessorを呼ぶ場合。
+## ELProcessorを呼ぶ場合。
 
 ```java
 ELProcessor elProc = new ELProcessor();
 
+// 変数の登録
 elProc.setVariable("currentDate", new Date());
 elProc.setVariable("formatter", new FormatterWrapper(Locale.getDefault()));
 
-String eval = elProc.eval("formatter.format('%1$tY/%1$tm/%1$td%n', currentDate)", String.class);
+String eval = elProc.eval("formatter.format('%1$tY/%1$tm/%1$td', currentDate)", String.class);
 
 System.out.println(eval);
 ```
 
-LocalELContextを直接呼ぶ場合。
+### EL関数を使用する場合
+```java
+// EL関数として呼び出すクラスの定義。
+public class MyFunction {
+        // staticメソッドで定義します。
+    public static int sum(int a, int b) {
+        return a + b;
+    }
+
+// ELProcessorにEL関数として登録する。
+ELProcessor elProc = new ELProcessor();
+
+/*
+ * 第1引数 - EL式中で呼び出すための接頭語。
+ * 第2引数 - EL式中で呼び出す関数名。空文字("")で指定した場合、Javaの関数名が使用されます。
+ * 第3引数 - 呼び出すJavaのクラス名を指定します。
+ * 第4引数 - 呼び出すメソッド名(static)の形式を指定します。
+ *          戻り値と関数名の間にスペースを空けます。さらに、引数が複数ある場合、カンマで区切ります。その際にスペースは空けないようにします。
+ */
+elProc.defineFunction("my", "sum", "my.MyFunction", "int sum(int,int)");
+
+elProc.setVariable("num", 5);
+
+// EL式の評価
+int eval = elProc.eval("my:sum(num, 2)", int.class);
+
+```
+
+## LocalELContextを直接呼ぶ場合。
 
 ```java
 LocalELContext context = new LocalELContext();
