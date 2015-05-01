@@ -21,6 +21,17 @@ BeanValidation1.1の実装であるHibernateValidator5.xのパッケージ「org
 
 # 使い方
 
+## ダウンロード
+Mavenのセントラルリポジトリからダウンロードします。
+
+```xml
+<dependency>
+    <groupId>com.github.mygreen</groupId>
+    <artifactId>standalone-el</artifactId>
+    <version>0.1</version>
+</depedency>
+```
+
 ## ELProcessorを呼ぶ場合。
 
 ```java
