@@ -29,7 +29,7 @@ Mavenのセントラルリポジトリからダウンロードします。
     <groupId>com.github.mygreen</groupId>
     <artifactId>standalone-el</artifactId>
     <version>0.1</version>
-</depedency>
+</dependency>
 ```
 
 ## ELProcessorを呼ぶ場合。
