@@ -2,6 +2,7 @@ package com.github.mygreen.expression.el;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.is;
 
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
@@ -14,6 +15,9 @@ import org.junit.Test;
 
 import com.github.mygreen.expression.el.ELProcessor;
 import com.github.mygreen.expression.el.FormatterWrapper;
+import com.github.mygreen.expression.el.tld.Function;
+import com.github.mygreen.expression.el.tld.Taglib;
+import com.github.mygreen.expression.el.tld.TldLoader;
 
 
 public class ELProcessorTest {
@@ -75,6 +79,37 @@ public class ELProcessorTest {
             e.printStackTrace();
             fail();
         }
+    }
+    
+    /**
+     * TDLファイルから関数を登録する
+     */
+    @Test
+    public void test_function_tld() throws Exception {
+        
+        // EL関数の登録
+        TldLoader loader = new TldLoader();
+        Taglib taglib = loader.load(ELProcessorTest.class.getResourceAsStream("/com/github/mygreen/expression/el/tld/xlsmapper.tld"));
+        
+        ELProcessor elProc = new ELProcessor();
+        
+        final String prefix = taglib.getShortName();
+        
+        for(Function function : taglib.getFunctions()) {
+            
+            final String className = function.getFunctionClass();
+            final String signature = function.getFunctionSignature();
+            final String name = function.getName();
+            
+            elProc.defineFunction(prefix, name, className, signature);
+        }
+        
+        String expression = "x:colToAlpha(columnNumber)";
+        elProc.setVariable("columnNumber", 1);
+        
+        String eval = elProc.eval(expression, String.class);
+        assertThat(eval, is("A"));
+        
     }
     
     public static class MyFunction {
