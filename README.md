@@ -28,11 +28,11 @@ Mavenのセントラルリポジトリからダウンロードします。
 <dependency>
     <groupId>com.github.mygreen</groupId>
     <artifactId>standalone-el</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
 </dependency>
 ```
 
-## ELProcessorを呼ぶ場合。
+## ELProcessorを呼ぶ場合
 
 ```java
 ELProcessor elProc = new ELProcessor();
@@ -54,6 +54,7 @@ public class MyFunction {
     public static int sum(int a, int b) {
         return a + b;
     }
+}
 
 // ELProcessorにEL関数として登録する。
 ELProcessor elProc = new ELProcessor();
@@ -74,7 +75,31 @@ int eval = elProc.eval("my:sum(num, 2)", int.class);
 
 ```
 
-## LocalELContextを直接呼ぶ場合。
+### EL関数を使用する場合（TLDファイルから読み込む場合）
+ver.0.2から追加された、``TldLoder``を使用します。
+
+```java
+// TLDファイルの読み込み
+TldLoader loader = new TldLoader();
+Taglib taglib = loader.load(/** tldファイルのInputStream */);
+
+ELProcessor elProc = new ELProcessor();
+
+//EL関数の登録
+final String prefix = taglib.getShortName();
+for(Function function : taglib.getFunctions()) {
+
+    final String className = function.getFunctionClass();
+    final String signature = function.getFunctionSignature();
+    final String name = function.getName();
+
+    elProc.defineFunction(prefix, name, className, signature);
+}
+
+```
+
+
+## LocalELContextを直接呼ぶ場合
 
 ```java
 LocalELContext context = new LocalELContext();
@@ -99,3 +124,4 @@ System.out.println(eval.getValue(context));
 EL式中で呼び出すオブジェクトの中のメソッドは、オーバライドしていると、区別つかないためラップなどして使用する。
 
 'java.util.Formatter#formatter'は、FormatterWrapperクラスでラップして呼び出している。
+
