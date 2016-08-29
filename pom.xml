@@ -5,7 +5,7 @@
 	<groupId>com.github.mygreen</groupId>
 	<artifactId>standalone-el</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1</version>
+	<version>0.2</version>
 	<name>standalone-el</name>
 	<url>http://mygreen.github.io/standalone-el/</url>
 	<description><![CDATA[
